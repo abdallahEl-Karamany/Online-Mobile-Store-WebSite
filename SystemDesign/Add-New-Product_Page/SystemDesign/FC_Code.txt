@@ -1,0 +1,115 @@
+flowchart TD
+    Start([Start]) -->ValidateForm["validateForm()"]
+     
+    ValidateForm --> ProductIdCheck["Check productId format"]
+    ProductIdCheck -->|"Split '_' and '/' to validate parts then check every part is a string and we have only 3 parts"| ProductIdValid{Valid format?}
+    ProductIdValid -- No --> ShowErrors1["showErrorMessage('Invalid Product ID')"] 
+    ProductIdValid -- Yes --> ImageCheck["Check image file size"]
+    
+    ImageCheck -->|"Image < 300KB"| ImageValid{Valid image?}
+    ImageValid -- No --> ShowErrors1["showErrorMessage('Invalid image file')"] 
+    ImageValid -- Yes --> PriceCheck["Check if price is numeric"]
+    
+    PriceCheck -->|"Must be numeric"| PriceValid{Valid price?}
+    PriceValid -- No --> ShowErrors1["showErrorMessage('Invalid price')"] 
+    PriceValid -- Yes -->  VersionCheck["Check version format"]
+    
+    VersionCheck -->|"Regex: XXX.XXX.XXX"| VersionValid{Valid version?}
+    VersionValid -- No --> ShowErrors1["showErrorMessage('Invalid version format')"] 
+    VersionValid -- Yes --> PlatformCheck["Check platform"]
+    
+    PlatformCheck -->|"Platform must be iOS or Android"| PlatformValid{Valid platform?}
+    PlatformValid -- No --> ShowErrors1["showErrorMessage('Invalid platform')"]
+    PlatformValid -- Yes --> SuccessMsg["showSuccessMessage('Product added successfully')"]
+    
+    SuccessMsg-->End([End])
+
+*Sequance Diagram Scenario 1: on click addProductButton() Successful Product Addition
+
+sequenceDiagram
+    
+   
+    Note over AddNewProductPage,ProductsHomePage: Scenario 1: on click addProductButton() Successful Product Addition
+    
+    
+    AddNewProductPage->>AddNewProductPage: validateForm()
+      AddNewProductPage->>AddNewProductPage: showSuccessMessage("Product is Added Successfully")
+    AddNewProductPage->>ProductsHomePage: redirectToProductsHomePage()
+
+
+*Sequance Diagram Scenario 2: on click addProductButton() Invalid Product Addition
+sequenceDiagram
+    
+    
+    participant AddNewProductPage
+    
+    Note over AddNewProductPage: Scenario 2: on click addProductButton() Invalid Product Addition
+    
+    AddNewProductPage->>AddNewProductPage: validateForm()
+     
+    
+    AddNewProductPage->>AddNewProductPage: showErrorMessage("Invalid Data")
+
+
+
+****ERD*****
+erDiagram
+    USER {
+        int user_id PK
+        string username
+        string email
+        string password
+        string address
+        string phone_number
+        string national_id
+        string user_type "Values: 'client' or 'supplier'"
+    }
+
+    PRODUCT {
+        int product_id PK
+        string product_code
+        string product_name
+        blob product_photo
+        decimal product_price
+        string product_version
+        string product_platform
+        int supplier_id FK
+    }
+
+    SHOPPING_CART {
+        int cart_id PK
+        int user_id FK
+        
+    }
+
+    CART_ITEM {
+        int cart_item_id PK
+        int cart_id FK
+        int product_id FK
+        decimal unit_price
+    }
+
+    ORDER {
+        int order_id PK
+        int user_id FK
+        datetime order_date
+        decimal total_amount
+        string payment_method
+    }
+
+    ORDER_ITEM {
+        int order_item_id PK
+        int order_id FK
+        int product_id FK
+        decimal unit_price
+    }
+
+    USER ||--o{ SHOPPING_CART : has
+    USER ||--o{ ORDER : places
+    SHOPPING_CART ||--o{ CART_ITEM : contains
+    PRODUCT ||--o{ CART_ITEM : added_to
+    PRODUCT ||--o{ ORDER_ITEM : purchased_in
+    USER ||--o{ PRODUCT : sells
+    ORDER ||--o{ ORDER_ITEM : includes
+
+   
