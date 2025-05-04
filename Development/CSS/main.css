@@ -1,0 +1,30 @@
+*,
+*::after,
+*::before
+{
+    box-sizing: border-box;
+}
+body
+{
+    margin: 0;
+}
+.navbg{
+    background-color: #e3f2fd;
+}
+.w-18{
+    width: 18%;
+}
+.w-35{
+    width: 35%;
+}
+button.btn.orangenew,
+button.btn.orangenew:hover,
+button.btn.orangenew:active,
+button.btn.orangenew:focus,
+button.btn.orangenew:focus-visible,
+button.btn.orangenew:focus-within,
+button.btn.orangenew:visited {
+    background-color: #FF784B !important;
+    color: white !important; /* Ensuring text stays white */
+    outline-color: #FF784B !important; /* For focus outlines */
+}
