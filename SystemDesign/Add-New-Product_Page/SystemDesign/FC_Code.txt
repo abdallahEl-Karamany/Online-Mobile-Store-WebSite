@@ -55,7 +55,7 @@ sequenceDiagram
 ****ERD*****
 erDiagram
     USER {
-        int user_id PK
+        string user_id PK "Document ID"
         string username
         string email
         string password
@@ -66,50 +66,53 @@ erDiagram
     }
 
     PRODUCT {
-        int product_id PK
-        string product_code
+        string product_id PK "Document ID"
         string product_name
         blob product_photo
         decimal product_price
         string product_version
         string product_platform
-        int supplier_id FK
+        string supplier_id FK
     }
 
     SHOPPING_CART {
-        int cart_id PK
-        int user_id FK
+        string cart_id PK "Document ID"
+        string user_id FK
+        object[] items "Array of cart items"
         
     }
 
-    CART_ITEM {
-        int cart_item_id PK
-        int cart_id FK
-        int product_id FK
-        decimal unit_price
-    }
-
     ORDER {
-        int order_id PK
-        int user_id FK
+        string order_id PK "Document ID"
+        string user_id FK
         datetime order_date
-        decimal total_amount
         string payment_method
-    }
-
-    ORDER_ITEM {
-        int order_item_id PK
-        int order_id FK
-        int product_id FK
-        decimal unit_price
+        decimal total_amount
+        object[] items "Array of order items"
     }
 
     USER ||--o{ SHOPPING_CART : has
     USER ||--o{ ORDER : places
-    SHOPPING_CART ||--o{ CART_ITEM : contains
-    PRODUCT ||--o{ CART_ITEM : added_to
-    PRODUCT ||--o{ ORDER_ITEM : purchased_in
     USER ||--o{ PRODUCT : sells
-    ORDER ||--o{ ORDER_ITEM : includes
+
+
+****************class diagram***********
+classDiagram
+    class AddNewProduct {
+        -TextField productId
+        -FileUpload image
+        -Float price
+        -TextField version
+        -RadioGroup~String~ platformSelection
+        -Button addProductButton
+        -Button cancelButton
+        +validateForm(): ValidationResult
+        +getFormData(): ProductFormData
+        +clearForm(): void
+        +onAddButtonClick(): void
+        +onCancelButtonClick(): void
+        +showSuccessMessage(message: String): void
+        +showErrorMessage(message: String): void
+    }
 
    
