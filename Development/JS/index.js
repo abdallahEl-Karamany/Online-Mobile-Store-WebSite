@@ -1,25 +1,117 @@
-var productList = [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {
+    getDatabase,
+    ref,
+    set,
+    get,
+    child,
+    remove,
+    push,
+    query,
+    orderByChild,
+    equalTo,
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyDL41m9UQ4P-NOBHloJag8aq6dsGFKgwUs",
+    authDomain: "mobile-store-portal.firebaseapp.com",
+    projectId: "mobile-store-portal",
+    storageBucket: "mobile-store-portal.firebasestorage.app",
+    messagingSenderId: "18439994999",
+    appId: "1:18439994999:web:d6975064c74115d55ad072",
+};
 
-if (localStorage.getItem("productcontainer") !== null) {
-    productList = JSON.parse(localStorage.getItem("productcontainer"));
-    displayData();
-}
-console.log(productList);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+var userName = document.getElementById("userName");
+var password = document.getElementById("userpassword");
+var success = document.getElementById("success");
+var error = document.getElementById("error");
+var login = document.getElementById("logInBtn");
 
-function displayData() {
-    var cartona = "";
-    for (i = 0; i < productList.length; i++) {
-        cartona += `<div class="col-2">
-            <div class="card text-dark  mb-3 mb-3 w-100">
-                <div class="card-body">
-                    <div class="card-img ">
-                        <img class="w-100" src="${productList[i].image}" alt="Iphone">
-                    </div>
-                    <div class="card-text text-center">${productList[i].name} </div>
-                    <div class="card-text text-center">${productList[i].price} &#36; </div>
-                </div>
-            </div>
-        </div>`;
+login.addEventListener("click", async () => {
+    if (!validatePassword() && !validateUserName()) {
+        password.classList.add("is-invalid");
+        userName.classList.add("is-invalid");
+        error.classList.remove("d-none");
+        error.textContent = "username Or password is requird";
+        return;
+    } else if (!validateUserName()) {
+        password.classList.remove("is-invalid");
+        userName.classList.add("is-invalid");
+        error.classList.remove("d-none");
+        error.textContent = "username Or password is requird";
+        return;
+    } else if (!validatePassword()) {
+        password.classList.add("is-invalid");
+        userName.classList.remove("is-invalid");
+        error.classList.remove("d-none");
+        error.textContent = "username Or password is requird";
+        return;
+    } else {
+        password.classList.remove("is-invalid");
+        userName.classList.remove("is-invalid");
+        error.classList.add("d-none");
+        error.textContent = "Please enter valid username or password";
+
+        const q = query(
+            ref(db, "Users"),
+            orderByChild("userName"),
+            equalTo(userName.value)
+        );
+
+        try {
+            const snap = await get(q);
+
+            if (!snap.exists()) {
+                success.classList.add("d-none");
+                error.classList.remove("d-none");
+                return;
+            }
+
+            let matched = false;
+
+            snap.forEach((child) => {
+                const userData = child.val();
+
+                if (userData.password === password.value) {
+                    matched = true;
+                    success.classList.remove("d-none");
+                    error.classList.add("d-none");
+
+                    localStorage.setItem("userId", JSON.stringify(child.key));
+                    if (userData.user_type === "supplier") {
+                        setTimeout(() => {
+                            window.location = "../Pages/supplier_home.html";
+                        }, 1500);
+                    }
+                }
+            });
+
+            if (!matched) {
+                success.classList.add("d-none");
+                error.classList.remove("d-none");
+                return;
+            }
+        } catch (err) {
+            console.error("Firebase read error:", err);
+        }
     }
-    document.getElementById("messoex").innerHTML = cartona;
+});
+
+function validateUserName() {
+    var test = userName.value;
+
+    if (test) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function validatePassword() {
+    var test = password.value;
+    if (test) {
+        return true;
+    } else {
+        return false;
+    }
 }

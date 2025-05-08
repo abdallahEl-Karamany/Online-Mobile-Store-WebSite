@@ -11,7 +11,6 @@
     <nav class="navbar  navbar-light  px-5 pt-3 shadow-sm p-3 mb-5 border-bottom border-black">
         <div class="container-fluid">
             <div class="w-35">
-                <a href="../index.html" class="w-100">
                 <img src="../Images/website_logo.png" alt="hi" class="w-75">
                 </a>
             </div>
@@ -21,39 +20,40 @@
         <div class="group m-auto w-75 p-2 shadow-lg rounded-5 bg-white">
             <h1 class="text text-center">Signup</h1>
             <label class="ms-2" >Username</label>
-            <input type="text" class="form-control  my-1" id="userName" placeholder="Enter Your Name">
+            <input type="text" class="form-control  my-1" id="userName" required placeholder="Enter Your Name">
             <label class="ms-2" >Email</label>
-            <input type="email" class="form-control  my-1" id="userEmail" placeholder="Enter Your E-mail">            
+            <input type="email" class="form-control  my-1" id="userEmail" required placeholder="Enter Your E-mail">            
             <label class="ms-2" >Password</label>
-            <input  type="password" class="form-control my-1" id="userPassword" placeholder="Enter Your Password">
+            <input  type="password" class="form-control my-1" id="userPassword" required placeholder="Enter Your Password">
             <label class="ms-2" >Confirm Password</label>
-            <input  type="password" class="form-control my-1" id="userConfirmPassword" placeholder="Enter Your confirmation Password">
+            <input  type="password" class="form-control my-1" id="userConfirmPassword" required placeholder="Enter Your confirmation Password">
             <label class="ms-2" >Address</label>
-            <input type="text" class="form-control  my-1" id="userAddress" placeholder="Enter your Address">
+            <input type="text" class="form-control  my-1" id="userAddress" required placeholder="Enter your Address">
             <label class="ms-2" >Phone</label>
-            <input type="number" class="form-control my-1" id="phoneNumber" placeholder="Enter your Phone Number">
+            <input type="tel" class="form-control my-1" id="phoneNumber" required placeholder="Enter your Phone Number">
             <label class="ms-2" >National ID</label>
-            <input type="number" class="form-control my-1" id="userNationalId" placeholder="Enter your National ID">
+            <input type="number" class="form-control my-1" id="userNationalId" required placeholder="Enter your National ID">
             <label class="ms-2" >User Type</label>
             <div class="my-1">
-                <select class="form-control-sm w-100 border-black border-2" id="productPlatform" name="currency">
+                <select class="form-control-sm w-100 border-black border-2" id="userType" name="currency">
                     <option  value="0">Select</option>
                     <option value="client">Client</option>
                     <option value="supplier">Supplier</option>
                 </select>
 
             </div>
-            <button id="signUpBtn"  class="btn btn-primary w-100 my-3">Rigester</button>
+            <button id="signUpBtn"class="btn btn-primary w-100 my-3">Rigester</button>
             <p class="text-center">You have an account? 
-                <a class="text-decoration-none" href="login.html">Sign in</a>
+                <a class="text-decoration-none" href="../index.html">Sign in</a>
             </p>
             <div>
-                <p class="w-35 mx-auto bg-danger-subtle   border border-danger rounded-5 text-danger  p-3 mb-5 d-none text-center" id="error">Please enter valid data</p>
+                <p class=" mx-auto bg-danger-subtle   border border-danger rounded-5 text-danger  p-3 mb-5 d-none text-center" id="error">Please enter valid data</p>
             </div>
             <div>
-                <p class="w-35 mx-auto bg-success-subtle   border border-success rounded-5 text-success  p-3 mb-5 d-none text-center" id="success">New account created Successfuly</p>
+                <p class=" mx-auto bg-success-subtle   border border-success rounded-5 text-success  p-3 mb-5 d-none text-center" id="success">New account created Successfuly</p>
             </div>
         </div>
     <script src="../JS/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../JS/signup.js" type="module"></script>
 </body>
 </html>

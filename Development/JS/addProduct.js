@@ -24,7 +24,7 @@ function addProduct() {
         document.getElementById("error").classList.add("d-none");
         document.getElementById("success").classList.remove("d-none");
         setTimeout(() => {
-            window.location = "../index.html";
+            window.location = "../Pages/supplier_home.html";
         }, 1500);
     } else {
         document.getElementById("success").classList.add("d-none");
@@ -33,7 +33,7 @@ function addProduct() {
 }
 function cancel() {
     clearForm();
-    window.location = "../index.html";
+    window.location = "../Pages/supplier_home.html";
 }
 function clearForm() {
     document.getElementById("productName").value = "";
