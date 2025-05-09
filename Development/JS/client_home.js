@@ -153,8 +153,9 @@ async function displayData() {
                                 client_id: userId,
                             });
                         }
+                        success.classList.remove("d-none");
+
                         setTimeout(() => {
-                            success.classList.remove("d-none");
                             window.location = "../Pages/client_home.html";
                         }, 1500);
                     } catch (error) {
