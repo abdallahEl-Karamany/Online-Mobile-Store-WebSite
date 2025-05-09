@@ -29,6 +29,8 @@ var updateProduct = document.getElementById("updateProduct");
 var success = document.getElementById("success");
 var error = document.getElementById("error");
 var deleted = document.getElementById("deleted");
+var signOut = document.getElementById("signoutbtn");
+
 search.addEventListener("input", displayData);
 var product_id = null;
 var index = null;
@@ -37,7 +39,6 @@ deleted.classList.add("d-none");
 
 if (localStorage.getItem("userId") !== null) {
     userId = JSON.parse(localStorage.getItem("userId"));
-    console.log(userId);
     displayData();
 } else {
     window.location = "../index.html";
@@ -101,7 +102,6 @@ async function displayData() {
 
                         productVersion.value =
                             data[Object.keys(data)[i]].product_version;
-                        console.log(data[Object.keys(data)[0]]);
 
                         productPlatform.value =
                             data[Object.keys(data)[i]].product_platform;
@@ -110,6 +110,28 @@ async function displayData() {
                 setTimeout(() => {
                     var deleteItem = document.getElementById("deleteItem");
                     deleteItem.addEventListener("click", async () => {
+                        const snap = await get(query(ref(db, "Cart")));
+                        snap.forEach(async (child) => {
+                            var oldData = child.val();
+                            var cartId = child.key;
+                            var cartItem = [];
+                            cartItem = oldData.items;
+                            console.log(product_id);
+
+                            var index = cartItem.findIndex(
+                                (items) => items.product_id === product_id
+                            );
+                            console.log(index);
+
+                            if (cartItem.length === 1) {
+                                await remove(ref(db, `Cart/${cartId}`));
+                            } else {
+                                cartItem.splice(index, 1);
+                                await update(ref(db, `Cart/${cartId}`), {
+                                    items: cartItem,
+                                });
+                            }
+                        });
                         await remove(ref(db, `Product/${product_id}`));
                         deleted.classList.remove("d-none");
                         setTimeout(() => {
@@ -182,55 +204,59 @@ cancel.addEventListener("click", () => {
 
 updateProduct.addEventListener("click", async (id) => {
     id = product_id;
-    if (!validateForm) {
+    if (!validateForm()) {
         success.classList.add("d-none");
         error.classList.remove("d-none");
-    }
-    productImage = `Images/${productImage.files[0].name}`;
-    try {
-        const x = query(
-            ref(db, "Product"),
-            orderByChild("product_name"),
-            equalTo(productName.value)
-        );
-        const snap = await get(x);
-        const olddata = snap.val();
-        if (olddata) {
-            if (id !== Object.keys(olddata)[index]) {
-                console.log(product_id + "bye");
-                console.log(Object.keys(olddata)[index] + "hi");
+    } else {
+        var productImage = document.getElementById("productImage");
 
-                error.classList.remove("d-none");
-                success.classList.add("d-none");
-                return;
+        productImage = `Images/${productImage.files[0].name}`;
+        try {
+            const x = query(
+                ref(db, "Product"),
+                orderByChild("product_name"),
+                equalTo(productName.value)
+            );
+            const snap = await get(x);
+            const olddata = snap.val();
+            if (olddata) {
+                if (id !== Object.keys(olddata)[0]) {
+                    error.classList.remove("d-none");
+                    success.classList.add("d-none");
+                    return;
+                }
             }
-        }
 
-        await update(ref(db, `Product/${product_id}`), {
-            product_name: productName.value,
-            product_photo: productImage,
-            product_price: productPrice.value,
-            product_version: productVersion.value,
-            product_platform: productPlatform.value,
-            supplier_id: userId,
-        });
-        success.classList.remove("d-none");
-        error.classList.add("d-none");
-        setTimeout(() => {
-            window.location = "../Pages/supplier_home.html";
-        }, 1500);
-    } catch (error) {
-        console.error("Error saving data: ", error);
+            await update(ref(db, `Product/${product_id}`), {
+                product_name: productName.value,
+                product_photo: productImage,
+                product_price: productPrice.value,
+                product_version: productVersion.value,
+                product_platform: productPlatform.value,
+                supplier_id: userId,
+            });
+            success.classList.remove("d-none");
+            error.classList.add("d-none");
+            setTimeout(() => {
+                window.location = "../Pages/supplier_home.html";
+            }, 1500);
+        } catch (error) {
+            console.error("Error saving data: ", error);
+        }
     }
 });
 
-
 function validateForm() {
+    var productVersion = document.getElementById("productVersion");
     var productImage = document.getElementById("productImage");
+    var productPlatform = document.getElementById("productPlatform");
+    var productName = document.getElementById("productName");
+    var productPrice = document.getElementById("productPrice");
     var nameRegx = /^[A-Z][a-zA-Z]*_[A-Z][a-zA-Z]*_(\d+|\d+(\.\d+){2})*$/;
-    var priceRegx = /^(0|[1-9]\d*)(\.\d{1,2})?$/;
+    var priceRegx = /^([1-9]\d*)(\.\d{1,2})?$/;
     var versionRegx = /^(\d+(\.\d+){2})*$/;
     var imageValidation = productImage.files;
+
     if (nameRegx.test(productName.value) == false) {
         document.getElementById("productName").classList.add("is-invalid");
         document
@@ -309,3 +335,7 @@ function validateForm() {
         return true;
     }
 }
+signOut.addEventListener("click", () => {
+    localStorage.removeItem("userId");
+    location.reload();
+});

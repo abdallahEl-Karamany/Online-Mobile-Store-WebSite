@@ -15,12 +15,13 @@ import firebaseConfig from "./db_config.js";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+var signOut = document.getElementById("signoutbtn");
 
 var userId = null;
 
 if (localStorage.getItem("userId") !== null) {
     userId = JSON.parse(localStorage.getItem("userId"));
-    console.log(userId);
+
     displayData();
 } else {
     window.location = "../index.html";
@@ -63,3 +64,7 @@ async function displayData() {
         console.error("Firebase read error:", err);
     }
 }
+signOut.addEventListener("click", () => {
+    localStorage.removeItem("userId");
+    location.reload();
+});

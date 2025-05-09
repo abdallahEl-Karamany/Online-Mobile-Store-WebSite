@@ -72,7 +72,6 @@ login.addEventListener("click", async () => {
                     error.classList.add("d-none");
 
                     localStorage.setItem("userId", JSON.stringify(child.key));
-                    console.log(userData.user_type);
 
                     if (userData.user_type === "supplier") {
                         setTimeout(() => {

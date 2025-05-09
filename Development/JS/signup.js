@@ -13,8 +13,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 import firebaseConfig from "./db_config.js";
 
-
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 

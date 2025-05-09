@@ -12,6 +12,7 @@ import firebaseConfig from "./db_config.js";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+var signOut = document.getElementById("signoutbtn");
 
 // ensure user is logged in
 const userId = JSON.parse(localStorage.getItem("userId"));
@@ -115,3 +116,8 @@ async function updateQuantity(productId, newQty) {
 }
 
 loadCart();
+
+signOut.addEventListener("click", () => {
+    localStorage.removeItem("userId");
+    location.reload();
+});

@@ -20,6 +20,7 @@ var cartItem = [];
 var userId = null;
 var success = document.getElementById("success");
 var cartCount = document.getElementById("cartCount");
+var signOut = document.getElementById("signoutbtn");
 var product_id;
 var xname = [];
 if (localStorage.getItem("userId") !== null) {
@@ -140,7 +141,6 @@ async function displayData() {
 
                                 await update(ref(db, `Cart/${cartId}`), {
                                     items: cartItem,
-                                    client_id: userId,
                                 });
                             });
                         } else {
@@ -183,7 +183,6 @@ async function displayData() {
                             cartItem.splice(index, 1);
                             await update(ref(db, `Cart/${cartId}`), {
                                 items: cartItem,
-                                client_id: userId,
                             });
                         }
 
@@ -200,3 +199,8 @@ async function displayData() {
         console.error("Firebase read error:", err);
     }
 }
+
+signOut.addEventListener("click", () => {
+    localStorage.removeItem("userId");
+    location.reload();
+});
