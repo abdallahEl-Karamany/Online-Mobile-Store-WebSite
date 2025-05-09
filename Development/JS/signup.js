@@ -11,14 +11,9 @@ import {
     orderByChild,
     equalTo,
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
-const firebaseConfig = {
-    apiKey: "AIzaSyDL41m9UQ4P-NOBHloJag8aq6dsGFKgwUs",
-    authDomain: "mobile-store-portal.firebaseapp.com",
-    projectId: "mobile-store-portal",
-    storageBucket: "mobile-store-portal.firebasestorage.app",
-    messagingSenderId: "18439994999",
-    appId: "1:18439994999:web:d6975064c74115d55ad072",
-};
+import firebaseConfig from "./db_config.js";
+
+
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);

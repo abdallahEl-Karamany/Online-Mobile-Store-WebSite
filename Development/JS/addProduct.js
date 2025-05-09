@@ -1,40 +1,82 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {
+    getDatabase,
+    ref,
+    set,
+    get,
+    child,
+    remove,
+    push,
+    query,
+    orderByChild,
+    equalTo,
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+import firebaseConfig from "./db_config.js";
+
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 var productName = document.getElementById("productName");
 var productPrice = document.getElementById("productPrice");
 
 var productVersion = document.getElementById("productVersion");
 var productImage = document.getElementById("productImage");
 var productPlatform = document.getElementById("productPlatform");
+var addProduct = document.getElementById("btnAdd");
+var cancel = document.getElementById("btnCancel");
+var success = document.getElementById("success");
+var error = document.getElementById("error");
+var userId = null;
 
-var productList = [];
-if (localStorage.getItem("productcontainer") !== null) {
-    productList = JSON.parse(localStorage.getItem("productcontainer"));
+if (localStorage.getItem("userId") !== null) {
+    userId = JSON.parse(localStorage.getItem("userId"));
+    console.log(userId);
+} else {
+    window.location = "../index.html";
 }
-function addProduct() {
-    if (validateForm() == true) {
-        productImage = `Images/${productImage.files[0].name}`;
-        var proudct = {
-            name: productName.value,
-            price: productPrice.value,
-            version: productVersion.value,
-            image: productImage,
-            platform: productPlatform.value,
-        };
-        productList.push(proudct);
-        localStorage.setItem("productcontainer", JSON.stringify(productList));
-        document.getElementById("error").classList.add("d-none");
-        document.getElementById("success").classList.remove("d-none");
-        setTimeout(() => {
-            window.location = "../Pages/supplier_home.html";
-        }, 1500);
-    } else {
-        document.getElementById("success").classList.add("d-none");
-        document.getElementById("error").classList.remove("d-none");
+addProduct.addEventListener("click", async () => {
+    if (!validateForm()) {
+        success.classList.add("d-none");
+        error.classList.remove("d-none");
     }
-}
-function cancel() {
+    productImage = `Images/${productImage.files[0].name}`;
+    try {
+        await get(
+            query(
+                ref(db, "Product"),
+                orderByChild("product_name"),
+                equalTo(productName.value)
+            )
+        ).then(async (snapshot) => {
+            if (snapshot.exists()) {
+                error.classList.remove("d-none");
+                success.classList.add("d-none");
+                return;
+            }
+            await set(push(ref(db, `Product`)), {
+                product_name: productName.value,
+                product_photo: productImage,
+                product_price: productPrice.value,
+                product_version: productVersion.value,
+                product_platform: productPlatform.value,
+                supplier_id: userId,
+            });
+            success.classList.remove("d-none");
+            error.classList.add("d-none");
+            setTimeout(() => {
+                window.location = "../Pages/supplier_home.html";
+            }, 1500);
+        });
+    } catch (error) {
+        console.error("Error saving data: ", error);
+    }
+});
+cancel.addEventListener("click", () => {
     clearForm();
     window.location = "../Pages/supplier_home.html";
-}
+});
+
 function clearForm() {
     document.getElementById("productName").value = "";
     document.getElementById("productPrice").value = "";
@@ -47,13 +89,11 @@ function validateForm() {
     var nameRegx = /^[A-Z][a-zA-Z]*_[A-Z][a-zA-Z]*_(\d+|\d+(\.\d+){2})*$/;
     var priceRegx = /^(0|[1-9]\d*)(\.\d{1,2})?$/;
     var versionRegx = /^(\d+(\.\d+){2})*$/;
+    productImage = document.getElementById("productImage");
     var imageValidation = productImage.files;
-    if (
-        nameRegx.test(productName.value) == false ||
-        productList.some(
-            (productList) => productList.name === productName.value
-        )
-    ) {
+    console.log(imageValidation);
+
+    if (nameRegx.test(productName.value) == false) {
         document.getElementById("productName").classList.add("is-invalid");
         document
             .getElementById("productPlatform")
@@ -64,7 +104,7 @@ function validateForm() {
             .getElementById("productVersion")
             .classList.remove("is-invalid");
         return false;
-    } else if (productImage.files.length === 0) {
+    } else if (imageValidation.length === 0) {
         document.getElementById("productImage").classList.add("is-invalid");
         document.getElementById("productName").classList.remove("is-invalid");
         document

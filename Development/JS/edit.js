@@ -1,129 +1,237 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {
+    getDatabase,
+    ref,
+    set,
+    get,
+    child,
+    remove,
+    push,
+    query,
+    orderByChild,
+    equalTo,
+    update,
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+import firebaseConfig from "./db_config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 var search = document.getElementById("search");
-var productList = [];
-var index;
-if (localStorage.getItem("productcontainer") !== null) {
-    productList = JSON.parse(localStorage.getItem("productcontainer"));
+var enableHide = document.getElementById("updateForm");
+var productName = document.getElementById("productName");
+var productPrice = document.getElementById("productPrice");
+var design = null;
+var productVersion = document.getElementById("productVersion");
+var productImage = document.getElementById("productImage");
+var productPlatform = document.getElementById("productPlatform");
+var cancel = document.getElementById("btnCancel");
+var updateProduct = document.getElementById("updateProduct");
+var success = document.getElementById("success");
+var error = document.getElementById("error");
+var deleted = document.getElementById("deleted");
+search.addEventListener("input", displayData);
+var product_id = null;
+var index = null;
+var userId = null;
+deleted.classList.add("d-none");
+
+if (localStorage.getItem("userId") !== null) {
+    userId = JSON.parse(localStorage.getItem("userId"));
+    console.log(userId);
     displayData();
+} else {
+    window.location = "../index.html";
 }
-function cancelUpdate() {
+
+async function displayData() {
+    var cartona = "";
+
+    try {
+        const q = query(
+            ref(db, "Product"),
+            orderByChild("supplier_id"),
+            equalTo(userId)
+        );
+        const snap = await get(q);
+        const data = snap.val();
+        var term = search.value;
+        var cartona = "";
+        for (let i = 0; i < Object.keys(data).length; i++) {
+            if (
+                data[Object.keys(data)[i]].product_name.toLowerCase() ==
+                    term.toLowerCase() &&
+                term.length > 0
+            ) {
+                product_id = Object.keys(data)[i];
+                index = i;
+                design = "with";
+                document.getElementById("with").classList.remove("d-none");
+                document.getElementById("without").classList.add("d-none");
+                cartona += `
+                        <div class="card text-dark  mb-3 mb-3 w-100">
+                            <div class="card-body">
+                                <div class="card-img ">
+                                    <img class="w-100" src="../${
+                                        data[Object.keys(data)[i]].product_photo
+                                    }" alt="Iphone">
+                                </div>
+                                <div class="text-center">
+                                    <div class="d-flex justify-content-center gap-2 mb-3">
+                            <button id="updateItem" class="btn btn-dark rounded-5">Update</button>
+                            <button id="deleteItem" class="btn btn-dark rounded-5">Delete</button></div>
+                                    </div>
+                                <div class="card-text text-center">${
+                                    data[Object.keys(data)[i]].product_name
+                                } </div>
+                                <div class="card-text text-center">${
+                                    data[Object.keys(data)[i]].product_price
+                                } &#36; </div>
+                            </div>
+                        </div>
+                    `;
+                setTimeout(() => {
+                    var updateItem = document.getElementById("updateItem");
+                    updateItem.addEventListener("click", () => {
+                        enableHide.classList.remove("d-none");
+                        productName.value =
+                            data[Object.keys(data)[i]].product_name;
+
+                        productPrice.value =
+                            data[Object.keys(data)[i]].product_price;
+
+                        productVersion.value =
+                            data[Object.keys(data)[i]].product_version;
+                        console.log(data[Object.keys(data)[0]]);
+
+                        productPlatform.value =
+                            data[Object.keys(data)[i]].product_platform;
+                    });
+                }, 0);
+                setTimeout(() => {
+                    var deleteItem = document.getElementById("deleteItem");
+                    deleteItem.addEventListener("click", async () => {
+                        await remove(ref(db, `Product/${product_id}`));
+                        deleted.classList.remove("d-none");
+                        setTimeout(() => {
+                            search.value = "";
+                            window.location = "../Pages/edit.html";
+                        }, 1500);
+                    });
+                }, 0);
+            } else if (term.length == 0) {
+                document.getElementById("with").classList.add("d-none");
+                document.getElementById("without").classList.remove("d-none");
+                design = "without";
+                enableHide.classList.add("d-none");
+                cartona += `<div class="col-2">
+                        <div class="card text-dark  mb-3 mb-3 w-100">
+                            <div class="card-body">
+                                <div class="card-img ">
+                                    <img class="w-100" src="../${
+                                        data[Object.keys(data)[i]].product_photo
+                                    }" alt="Iphone">
+                                </div>
+                                <div class="card-text text-center">${
+                                    data[Object.keys(data)[i]].product_name
+                                } </div>
+                                <div class="card-text text-center">${
+                                    data[Object.keys(data)[i]].product_price
+                                } &#36; </div>
+                            </div>
+                        </div>
+                    </div>`;
+            } else if (
+                data[Object.keys(data)[i]].product_name
+                    .toLowerCase()
+                    .includes(term.toLowerCase())
+            ) {
+                enableHide.classList.add("d-none");
+                document.getElementById("with").classList.add("d-none");
+                document.getElementById("without").classList.remove("d-none");
+                design = "without";
+                cartona += `<div class="col-2">
+                        <div class="card text-dark  mb-3 mb-3 w-100">
+                            <div class="card-body">
+                                <div class="card-img ">
+                                    <img class="w-100" src="../${
+                                        data[Object.keys(data)[i]].product_photo
+                                    }" alt="Iphone">
+                                </div>
+                                <div class="card-text text-center">${
+                                    data[Object.keys(data)[i]].product_name
+                                } </div>
+                                <div class="card-text text-center">${
+                                    data[Object.keys(data)[i]].product_price
+                                } &#36; </div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        document.getElementById(`${design}`).innerHTML = cartona;
+    } catch (err) {
+        console.error("Firebase read error:", err);
+    }
+}
+cancel.addEventListener("click", () => {
     search.value = "";
 
     displayData();
-}
-function updateItem(indexItem) {
-    index = indexItem;
-    console.log(indexItem);
+});
 
-    document.getElementById("updateForm").classList.remove("d-none");
-    document.getElementById("productName").value = productList[indexItem].name;
+updateProduct.addEventListener("click", async (id) => {
+    id = product_id;
+    if (!validateForm) {
+        success.classList.add("d-none");
+        error.classList.remove("d-none");
+    }
+    productImage = `Images/${productImage.files[0].name}`;
+    try {
+        const x = query(
+            ref(db, "Product"),
+            orderByChild("product_name"),
+            equalTo(productName.value)
+        );
+        const snap = await get(x);
+        const olddata = snap.val();
+        if (olddata) {
+            if (id !== Object.keys(olddata)[index]) {
+                console.log(product_id + "bye");
+                console.log(Object.keys(olddata)[index] + "hi");
 
-    document.getElementById("productPrice").value =
-        productList[indexItem].price;
-
-    document.getElementById("productVersion").value =
-        productList[indexItem].version;
-    document.getElementById("productPlatform").value =
-        productList[indexItem].platform;
-}
-function updateProduct() {
-    var productName = document.getElementById("productName");
-    var productPrice = document.getElementById("productPrice");
-
-    var productVersion = document.getElementById("productVersion");
-    var productImage = document.getElementById("productImage");
-    var productPlatform = document.getElementById("productPlatform");
-    if (validateForm() == true) {
-        productList[index].name = productName.value;
-        productList[index].price = productPrice.value;
-        productList[index].platform = productPlatform.value;
-        productList[index].version = productVersion.value;
-        if (productImage.files.length !== 0) {
-            productList[index].image = `Images/${productImage.files[0].name}`;
+                error.classList.remove("d-none");
+                success.classList.add("d-none");
+                return;
+            }
         }
-        localStorage.setItem("productcontainer", JSON.stringify(productList));
-        document.getElementById("error").classList.add("d-none");
-        document.getElementById("success").classList.remove("d-none");
+
+        await update(ref(db, `Product/${product_id}`), {
+            product_name: productName.value,
+            product_photo: productImage,
+            product_price: productPrice.value,
+            product_version: productVersion.value,
+            product_platform: productPlatform.value,
+            supplier_id: userId,
+        });
+        success.classList.remove("d-none");
+        error.classList.add("d-none");
         setTimeout(() => {
             window.location = "../Pages/supplier_home.html";
         }, 1500);
-    } else {
-        document.getElementById("success").classList.add("d-none");
-        document.getElementById("error").classList.remove("d-none");
+    } catch (error) {
+        console.error("Error saving data: ", error);
     }
-}
-function deleteItem(indexItem) {
-    productList.splice(indexItem, 1);
-    localStorage.setItem("productcontainer", JSON.stringify(productList));
-    displayData();
-}
+});
 
-function displayData() {
-    var term = search.value;
-    var cartona = "";
-    for (i = 0; i < productList.length; i++) {
-        if (
-            productList[i].name.toLowerCase() == term.toLowerCase() &&
-            term.length > 0
-        ) {
-            cartona += `<div class="card bg-light border-0 shadow-sm mb-4 " >
-                        <div class="card-body p-4">
-                        <img src="../${productList[i].image}" class="img-fluid rounded mb-3" alt="Product Image">
-                        <div class="text-center">
-                            <div class="d-flex justify-content-center gap-2 mb-3">
-                    <button onclick="updateItem(${i})" class="btn btn-dark rounded-5">Update</button>
-                    <button onclick="deleteItem(${i})" class="btn btn-dark rounded-5">Delete</button></div>
-                            </div>
-                            <div class="text-center">
-                            <h5 class="mb-0">${productList[i].name} </h5>
-                            <p class="text-muted">${productList[i].price}</p>
-                        </div>
-                        </div>
-                        </div>`;
-        } else if (term.length == 0) {
-            document.getElementById("updateForm").classList.add("d-none");
-            cartona += `<div class="card bg-light border-0 shadow-sm mb-4 " >
-                    <div class="card-body p-4">
-                        <img src="../${productList[i].image}" class="img-fluid rounded mb-3" alt="Product Image">
-                        <div class="text-center">
-                            <h5 class="mb-0">${productList[i].name} </h5>
-                            <p class="text-muted">${productList[i].price}</p>
-                        </div>
-                        </div>`;
-        } else if (
-            productList[i].name.toLowerCase().includes(term.toLowerCase())
-        ) {
-            document.getElementById("updateForm").classList.add("d-none");
-            cartona += `<div class="card bg-light border-0 shadow-sm mb-4 " >
-                            <div class="card-body p-4">
-                                <img src="../${productList[i].image}" class="img-fluid rounded mb-3" alt="Product Image">
-                                <div class="text-center">
-                                    <div class="text-center">
-                                    <h5 class="mb-0">${productList[i].name} </h5>
-                                    <p class="text-muted">${productList[i].price}</p>
-                                </div>
-                            </div>
-                        </div>`;
-        }
-    }
-    document.getElementById("messoex").innerHTML = cartona;
-}
 
 function validateForm() {
-    var x = "";
-    for (let i = 0; i < productList.length; i++) {
-        if (productList[i].name === productName.value && index !== i) {
-            x = false;
-        } else {
-            x = true;
-        }
-    }
-    console.log(x);
-
+    var productImage = document.getElementById("productImage");
     var nameRegx = /^[A-Z][a-zA-Z]*_[A-Z][a-zA-Z]*_(\d+|\d+(\.\d+){2})*$/;
     var priceRegx = /^(0|[1-9]\d*)(\.\d{1,2})?$/;
     var versionRegx = /^(\d+(\.\d+){2})*$/;
     var imageValidation = productImage.files;
-    if (nameRegx.test(productName.value) == false || x === false) {
+    if (nameRegx.test(productName.value) == false) {
         document.getElementById("productName").classList.add("is-invalid");
         document
             .getElementById("productPlatform")
@@ -134,24 +242,29 @@ function validateForm() {
             .getElementById("productVersion")
             .classList.remove("is-invalid");
         return false;
-    } else if (productImage.files.length !== 0) {
-        if (imageValidation[0].size > 300 * 1024) {
-            document.getElementById("productImage").classList.add("is-invalid");
-            document
-                .getElementById("productName")
-                .classList.remove("is-invalid");
-            document
-                .getElementById("productVersion")
-                .classList.remove("is-invalid");
-            document
-                .getElementById("productPlatform")
-                .classList.remove("is-invalid");
-            document
-                .getElementById("productPrice")
-                .classList.remove("is-invalid");
+    } else if (imageValidation.length === 0) {
+        document.getElementById("productImage").classList.add("is-invalid");
+        document.getElementById("productName").classList.remove("is-invalid");
+        document
+            .getElementById("productVersion")
+            .classList.remove("is-invalid");
+        document
+            .getElementById("productPlatform")
+            .classList.remove("is-invalid");
+        document.getElementById("productPrice").classList.remove("is-invalid");
+        return false;
+    } else if (imageValidation[0].size > 300 * 1024) {
+        document.getElementById("productImage").classList.add("is-invalid");
+        document.getElementById("productName").classList.remove("is-invalid");
+        document
+            .getElementById("productVersion")
+            .classList.remove("is-invalid");
+        document
+            .getElementById("productPlatform")
+            .classList.remove("is-invalid");
+        document.getElementById("productPrice").classList.remove("is-invalid");
 
-            return false;
-        }
+        return false;
     } else if (priceRegx.test(productPrice.value) == false) {
         document.getElementById("productPrice").classList.add("is-invalid");
         document.getElementById("productName").classList.remove("is-invalid");

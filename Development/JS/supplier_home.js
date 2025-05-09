@@ -1,25 +1,65 @@
-var productList = [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {
+    getDatabase,
+    ref,
+    set,
+    get,
+    child,
+    remove,
+    push,
+    query,
+    orderByChild,
+    equalTo,
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+import firebaseConfig from "./db_config.js";
 
-if (localStorage.getItem("productcontainer") !== null) {
-    productList = JSON.parse(localStorage.getItem("productcontainer"));
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+var userId = null;
+
+if (localStorage.getItem("userId") !== null) {
+    userId = JSON.parse(localStorage.getItem("userId"));
+    console.log(userId);
     displayData();
+} else {
+    window.location = "../index.html";
 }
-console.log(productList);
 
-function displayData() {
+async function displayData() {
     var cartona = "";
-    for (i = 0; i < productList.length; i++) {
-        cartona += `<div class="col-2">
-            <div class="card text-dark  mb-3 mb-3 w-100">
-                <div class="card-body">
-                    <div class="card-img ">
-                        <img class="w-100" src="../${productList[i].image}" alt="Iphone">
+
+    try {
+        const q = query(
+            ref(db, "Product"),
+            orderByChild("supplier_id"),
+            equalTo(userId)
+        );
+        const snap = await get(q);
+        const data = snap.val();
+        if (data) {
+            for (let i = 0; i < Object.keys(data).length; i++) {
+                cartona += `<div class="col-2">
+                    <div class="card text-dark  mb-3 mb-3 w-100">
+                        <div class="card-body">
+                            <div class="card-img ">
+                                <img class="w-100" src="../${
+                                    data[Object.keys(data)[i]].product_photo
+                                }" alt="Iphone">
+                            </div>
+                            <div class="card-text text-center">${
+                                data[Object.keys(data)[i]].product_name
+                            } </div>
+                            <div class="card-text text-center">${
+                                data[Object.keys(data)[i]].product_price
+                            } &#36; </div>
+                        </div>
                     </div>
-                    <div class="card-text text-center">${productList[i].name} </div>
-                    <div class="card-text text-center">${productList[i].price} &#36; </div>
-                </div>
-            </div>
-        </div>`;
+                </div>`;
+            }
+            document.getElementById("messoex").innerHTML = cartona;
+        }
+    } catch (err) {
+        console.error("Firebase read error:", err);
     }
-    document.getElementById("messoex").innerHTML = cartona;
 }
