@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../CSS/main.css">
+    <link rel="stylesheet" href="../CSS/bootstrap/bootstrap.min.css">
+</head>
+<body class="">
+
+
+    <nav class="navbar navbar-expand-lg navbar-light  px-5 pt-3 shadow-sm p-3 mb-5 border-bottom border-black">
+        <div class="container-fluid">
+            <div class="w-50">
+                <a href="../Pages/supplier_home.html" class="w-100">
+                <img src="../Images/website_logo.png" alt="hi" class="w-75">
+                </a>
+            </div>
+        </div>
+        <div class=" w-75 me-2">
+            <input type="search" id="search"  class="form-control w-100 mx-auto my-2 "placeholder="Search By Name">
+        </div>
+        <div>
+            <button id="signoutbtn" class="btn orangenew  text-white rounded-5    text-center">SignOut</button>
+
+        </div>
+    </nav>
+    <div class="container">
+        <p class="w-100 mx-auto bg-success-subtle   border border-success rounded-5 text-success  p-3 mb-5 d-none text-center" id="deleted">Product is removed successfuly</p>
+    </div>
+    <div class="container">
+
+                <div class="container-fluid py-4" >
+                    <div class="row g-4" id="without">
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-3 mb-3" id="with">
+
+                        </div>
+
+                        
+                        <div class="col-lg-8 d-none" id="updateForm">
+                            <div>
+                                <p class="w-100 mx-auto bg-danger-subtle   border border-danger rounded-5 text-danger  p-3 mb-5 d-none text-center" id="error">Invalid Data</p>
+                            </div>
+                            <div>
+                                <p class="w-100 mx-auto bg-success-subtle   border border-success rounded-5 text-success  p-3 mb-5 d-none text-center" id="success">Product is Updated Successfuly</p>
+                            </div>
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-body p-4">
+                                    <h4 class="card-title mb-4">Update Product</h4>
+                                    
+                                    <form>
+                                        <div class="mb-3">
+                                            <label for="productId" class="form-label">Product Name *</label>
+                                            <input type="text" class="form-control" id="productName" placeholder="Brand_ProductName_Size/Version">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="form-floating ">
+                                                <input type="file" class="form-control w-100  border-2" id="productImage"  placeholder="">
+                                                <label class="w-100 mx-4 text-center" for="productImage"><i class="bi bi-cloud-upload fs-1 "></i></label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="productPrice" class="form-label">Price *</label>
+                                            <input type="number" class="form-control" id="productPrice" placeholder="500">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="productVersion" class="form-label">Version *</label>
+                                            <input type="text" class="form-control" id="productVersion" placeholder="1.0.0">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="productPlatform" class="form-label">Platform *</label>
+                                            <select class="form-select" id="productPlatform">
+                                                <option value="0">Select</option>
+                                                <option value="android">Android</option>
+                                                <option value="ios">iOS</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-evenly gap-2 mt-4">
+                                            <button type="button" id="btnCancel" class="btn btn-dark rounded-pill px-4">Cancel</button>
+                                            <button type="button" id="updateProduct" class="btn orangenew text-white rounded-pill px-4">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+    </div>
+
+    <script src="../JS/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../JS/edit.js" type="module" ></script>
+</body>
+</html>

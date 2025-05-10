@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff;
+  }
+  
+  .site-header {
+    background: #aaa;
+    padding: 10px 20px;
+  }
+  
+  .site-name {
+    color: white;
+    font-weight: bold;
+  }
+  
+  .checkout-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px);
+  }
+  
+  .checkout-box {
+    background: #ccc;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    color: #ffffff;
+  }
+  
+  .payment-method {
+    margin: 15px 0;
+  }
+  
+  .price-details {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  .price-details div {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+  }
+  
+  .total {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .btn {
+    padding: 10px;
+    flex: 1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .btn.cancel {
+    background: #222;
+    color: white;
+  }
+  
+  .btn.place {
+    background: #000;
+    color: white;
+  }
+  
+  .confirmation-msg {
+    color: green;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+  

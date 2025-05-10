@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="CSS/main.css">
+    <link rel="stylesheet" href="CSS/bootstrap/bootstrap.min.css">
+</head>
+<body class="">
+
+    <nav class="navbar  navbar-light  px-5 pt-3 shadow-sm p-3 mb-5 border-bottom border-black">
+        <div class="container-fluid">
+            <div class="w-35">
+                <img src="Images/website_logo.png" alt="hi" class="w-75">
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="container w-50 my-5  ">
+        <div class="group m-auto w-50 p-5 shadow-lg bg-white rounded-5 ">
+            <h1 class="text text-center text-center">Welcome Back</h1>
+            <p class="text-center">Sign in to your account</p>
+            <label for="">Username</label>
+            <input type="text" class="form-control  my-3" id="userName" required placeholder="Username">
+            <label for="">password</label>
+            <input type="password" class="form-control my-3" id="userpassword" required placeholder="Password">
+            <div class="d-flex justify-content-center">
+            <button id="logInBtn" class="btn orangenew  text-white rounded-5 w-50  text-center">Sign in</button>
+            </div>
+            <p class=" text-center mt-1">Don’t have an account? 
+                <a class="text-decoration-none" href="Pages/signup.html">Sign Up</a>
+            </p>
+            <div >
+                <p class=" mx-auto bg-danger-subtle   border border-danger rounded-5 text-danger  p-3 mb-5 d-none text-center" id="error">Please enter valid username or password</p>
+            </div>
+            <div>
+                <p class=" mx-auto bg-success-subtle   border border-success rounded-5 text-success  p-3 mb-5 d-none text-center" id="success">Login Successfuly</p>
+            </div>
+        </div>
+    <script src="JS/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="JS/index.js" type="module"></script>
+</body>
+</html>

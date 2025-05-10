@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout</title>
+  <link rel="stylesheet" href="../CSS/checkout.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-name">■ Online Mobile Store</div>
+  </header>
+
+  <main class="checkout-wrapper">
+    <section class="checkout-box">
+      <h3>Checkout</h3>
+      <div class="payment-method">
+        <label>
+          <input type="radio" checked disabled />
+          Cash On Delivery (COD)
+        </label>
+      </div>
+
+      <div class="price-details">
+        <!-- Cart items will be dynamically inserted here -->
+        <div class="total"><strong>Total</strong><strong>$0.00</strong></div>
+      </div>
+
+      <div class="actions">
+        <button id="cancel-order" class="btn cancel" onclick="window.location.href='client_home.html'">Cancel Order</button>
+        <button id="place-order" class="btn place" onclick="window.location.href='History.html'">Place Order</button>
+      </div>
+
+      <p id="confirmation-msg" class="confirmation-msg"></p>
+    </section>
+  </main>
+
+  <script src="../JS/checkout.js" type="module"></script>
+</body>
+</html>
