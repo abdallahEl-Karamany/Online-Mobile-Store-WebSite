@@ -104,4 +104,6 @@ document.getElementById("place-order").addEventListener("click", async () => {
     } catch (err) {
         console.error("Order placement failed:", err);
     }
+    
+
 });
