@@ -99,9 +99,11 @@ document.getElementById("place-order").addEventListener("click", async () => {
         msg.textContent = "Your order is placed successfully.";
 
         setTimeout(() => {
-            window.location.href = "client_home.html"; // Redirect to client home page
+            window.location.href = "History.html"; // Redirect to client home page
         }, 1500);
     } catch (err) {
         console.error("Order placement failed:", err);
     }
+    
+
 });
