@@ -20,6 +20,9 @@ if (!userId) window.location = "../index.html";
 
 const cartContainer = document.getElementById("cart-items");
 const totalEl = document.getElementById("totalAmount");
+const emptyMsg = document.getElementById("empty-cart-message");
+const totalSection = document.querySelector(".total");
+const buttons = document.querySelector(".buttons");
 
 async function loadCart() {
     // fetch products
@@ -44,7 +47,20 @@ async function loadCart() {
         });
     }
 
-    // render
+    // Show/hide elements based on cart state
+    if (items.length === 0) {
+        emptyMsg.style.display = "flex";
+        cartContainer.innerHTML = "";
+        totalSection.style.display = "none";
+        buttons.style.display = "none";
+        return;
+    } else {
+        emptyMsg.style.display = "none";
+        totalSection.style.display = "block";
+        buttons.style.display = "flex";
+    }
+
+    // render items
     cartContainer.innerHTML = "";
     let total = 0;
 
@@ -115,6 +131,7 @@ async function updateQuantity(productId, newQty) {
     });
 }
 
+// Initialize
 loadCart();
 
 signOut.addEventListener("click", () => {
