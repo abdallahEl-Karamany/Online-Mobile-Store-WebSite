@@ -155,7 +155,7 @@ function validatePhoneNumber() {
 }
 function validateNationalId() {
     var test = nationalId.value;
-    var regex = /^([2-3])(\d{2})([01]\d)([0-3]\d)(\d{2})(\d{5})$/;
+    var regex = /^[23]\d{13}$/;
     if (regex.test(test) == true) {
         nationalId.classList.remove("is-invalid");
 
@@ -167,7 +167,7 @@ function validateNationalId() {
     }
 }
 function validateUserType() {
-    if (userType.value !== 0) {
+    if (userType.value !== "0") {
         userType.classList.remove("is-invalid");
         return true;
     } else {

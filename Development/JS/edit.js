@@ -59,8 +59,8 @@ async function displayData() {
         var cartona = "";
         for (let i = 0; i < Object.keys(data).length; i++) {
             if (
-                data[Object.keys(data)[i]].product_name.toLowerCase() ==
-                    term.toLowerCase() &&
+                data[Object.keys(data)[i]].product_name ==
+                    term &&
                 term.length > 0
             ) {
                 product_id = Object.keys(data)[i];
@@ -164,8 +164,7 @@ async function displayData() {
                     </div>`;
             } else if (
                 data[Object.keys(data)[i]].product_name
-                    .toLowerCase()
-                    .includes(term.toLowerCase())
+                    .includes(term)
             ) {
                 enableHide.classList.add("d-none");
                 document.getElementById("with").classList.add("d-none");
